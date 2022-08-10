@@ -1,0 +1,45 @@
+name: Java - PR
+
+on:
+  workflow_call:
+    inputs:
+      java_distribution:
+        type: string
+        required: true
+      java_version:
+        type: string
+        required: true
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MVN_DEFAULT: mvn --settings settings.xml --projects . --also-make
+      DOCKER_CLI_EXPERIMENTAL: enabled
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ inputs.java_distribution }}
+          java-version: ${{ inputs.java_version }}
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+          
+      - name: Code Style
+        run: |
+          ${{ env.MVN_DEFAULT }} clean compile -U
+      
+      - name: Unit Test
+        run: |
+          ${{ env.MVN_DEFAULT }} test --fail-at-end
+
