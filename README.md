@@ -14,7 +14,7 @@
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
-| environment | string |  | Environment being deployed to | True |
+| environment | string | development | Environment being deployed to | True |
 | service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
 | service | string | . | Name of the service in Kubernetes (i.e sso) | True |
 | namespace | string |  | Namespace (if applicable) of the service (used for ECR) | True |
@@ -34,7 +34,7 @@
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
-| environment | string |  | Environment being deployed to | True |
+| environment | string | development | Environment being deployed to | True |
 | service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
 | service | string | . | Name of the service in Kubernetes (i.e sso) | False |
 | namespace | string |  | Namespace (if applicable) of the service (used for ECR) | True |
