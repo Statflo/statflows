@@ -45,13 +45,13 @@
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
-| working_directory | string |  | Sets a working directory if a monorepo is being used | False |
+| working_directory | string | . | Sets a working directory if a monorepo is being used | False |
 
 ### JavaScript - Deploy
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
-| working_directory | string |  | Sets a working directory if a monorepo is being used | False |
+| working_directory | string | . | Sets a working directory if a monorepo is being used | False |
 | s3_bucket | string | . | Address of the s3 bucket (`s3://` is not required) | True |
 | s3_bucket_region | string | . | Region where the s3 bucket is located | False |
 | cf_dist_id | string |  | Cloudfront Distribution ID where s3 website is hosted | True |
