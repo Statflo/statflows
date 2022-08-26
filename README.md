@@ -22,3 +22,21 @@
 | java_version | string |  | Version of JDK being used, refer to link above for references of available versions | True |
 | AWS_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS access key to access a specific ECR | True |
 | AWS_SECRET_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS secret access key to access a specific ECR | True |
+
+### Docker - PR
+
+| Name | Value | Default | Description | Required |
+|---|---|---|---|---|
+| service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
+| service | string |  | Name of the service in Kubernetes (i.e sso) | False |
+
+### Docker - Deploy
+
+| Name | Value | Default | Description | Required |
+|---|---|---|---|---|
+| environment | string |  | Environment being deployed to | True |
+| service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
+| service | string | . | Name of the service in Kubernetes (i.e sso) | False |
+| namespace | string |  | Namespace (if applicable) of the service (used for ECR) | True |
+| AWS_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS access key to access a specific ECR | True |
+| AWS_SECRET_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS secret access key to access a specific ECR | True |
