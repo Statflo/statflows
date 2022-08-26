@@ -15,10 +15,10 @@ on:
         type: string
         required: true
         description: Name of the service in Kubernetes (i.e sso)
-      package_name:
+      namespace:
         type: string
         required: true
-        description: Full path used by ECR to maintain image (i.e common/sso)
+        description: Namespace (if applicable) of the service
       java_distribution:
         type: string
         required: true
@@ -111,7 +111,7 @@ jobs:
         id: docker_build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.package_name }}
+          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         uses: docker/build-push-action@v2
         with:
           context: ./${{ inputs.service_path }}
@@ -124,7 +124,7 @@ jobs:
       
       - name: Kubernetes resource setup
         env:
-          ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.package_name }}:${{ env.GIT_REF }}-${{ env.SHORT_SHA }}
+          ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.SHORT_SHA }}
         run: |
           cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
           sed -i "s|image:.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
