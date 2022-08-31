@@ -10,6 +10,10 @@ on:
         type: string
         default: '.'
         required: false
+      dist_folder:
+        type: string
+        required: false
+        default: './dist'
       s3_bucket:
         type: string
         required: true
@@ -78,7 +82,7 @@ jobs:
           aws-region: ${{ inputs.s3_bucket_region }}
 
       - name: Deploy container to bucket
-        run: aws s3 sync ${{ inputs.working_directory }} s3://${{ inputs.s3_bucket }}
+        run: aws s3 sync ${{ inputs.dist_folder }} s3://${{ inputs.s3_bucket }}
         
       - name: Invalidate dashboard cloudfront
         run: aws cloudfront create-invalidation --distribution-id ${{ inputs.cf_dist_id }} --paths /*
