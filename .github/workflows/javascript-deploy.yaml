@@ -3,6 +3,9 @@ name: JavaScript - Deploy
 on:
   workflow_call:
     inputs:
+      javascript_version:
+        type: string
+        required: false
       working_directory:
         type: string
         default: '.'
@@ -33,6 +36,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        
+      - uses: actions/setup-node@v3
+        if: inputs.javascript_version != ''
+        with:
+          node-version: ${{ inputs.javascript_version }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
