@@ -49,6 +49,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: |
+          echo "WORKDIR_PATH=$(echo ${{ inputs.working_directory }} | sed -e 's/\//-/g')" >> $GITHUB_ENV
           cd ${{ inputs.working_directory }}
           echo "::set-output name=dir::$(yarn cache dir)"
       
@@ -56,9 +57,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-
 
       - name: Install dependencies
         working-directory: ${{ inputs.working_directory }}
