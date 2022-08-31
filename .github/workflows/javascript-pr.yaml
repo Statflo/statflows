@@ -6,6 +6,9 @@ on:
       working_directory:
         type: string
         required: true
+      node_version:
+        type: string
+        required: false
 
 jobs:
   pr:
@@ -13,6 +16,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        
+      - uses: actions/setup-node@v3
+        if: inputs.node_version != ''
+        with:
+          node-version: ${{ inputs.node_version }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
