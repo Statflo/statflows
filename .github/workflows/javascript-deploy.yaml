@@ -3,7 +3,7 @@ name: JavaScript - Deploy
 on:
   workflow_call:
     inputs:
-      javascript_version:
+      node_version:
         type: string
         required: false
       working_directory:
@@ -38,9 +38,9 @@ jobs:
         uses: actions/checkout@v3
         
       - uses: actions/setup-node@v3
-        if: inputs.javascript_version != ''
+        if: inputs.node_version != ''
         with:
-          node-version: ${{ inputs.javascript_version }}
+          node-version: ${{ inputs.node_version }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
