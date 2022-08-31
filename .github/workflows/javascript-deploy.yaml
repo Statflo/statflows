@@ -5,19 +5,18 @@ on:
     inputs:
       working_directory:
         type: string
-        required: true
+        default: '.'
+        required: false
       s3_bucket:
         type: string
         required: true
       s3_bucket_region:
         type: string
-        required: true
+        default: 'ca-central-1'
+        required: false
       cf_dist_id:
         type: string
         required: true
-      folder:
-        type: string
-        required: false
       build_env:
         type: string
         required: false
@@ -71,7 +70,7 @@ jobs:
           aws-region: ${{ inputs.s3_bucket_region }}
 
       - name: Deploy container to bucket
-        run: aws s3 sync ${{ inputs.folder }} s3://${{ inputs.s3_bucket }}
+        run: aws s3 sync ${{ inputs.working_directory }} s3://${{ inputs.s3_bucket }}
         
       - name: Invalidate dashboard cloudfront
         run: aws cloudfront create-invalidation --distribution-id ${{ inputs.cf_dist_id }} --paths /*
