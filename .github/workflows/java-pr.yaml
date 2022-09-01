@@ -18,7 +18,7 @@ jobs:
   pr:
     runs-on: ubuntu-latest
     env:
-      MVN_DEFAULT: mvn --settings settings.xml --projects ${{ inputs.service }} --also-make
+      MVN_DEFAULT: mvn --settings settings.xml --projects ${{ inputs.service_path }} --also-make
       DOCKER_CLI_EXPERIMENTAL: enabled
 
     steps:
