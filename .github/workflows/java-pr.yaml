@@ -3,7 +3,7 @@ name: Java - PR
 on:
   workflow_call:
     inputs:
-      service:
+      service_path:
         type: string
         required: false
         default: "."
