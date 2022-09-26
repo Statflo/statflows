@@ -41,7 +41,7 @@ jobs:
 
       - name: Code Style
         run: |
-          ${{ env.MVN_DEFAULT }} clean compile verify -U
+          ${{ env.MVN_DEFAULT }} clean compile verify -U -DskipTests
 
       - name: Unit Test
         run: |
