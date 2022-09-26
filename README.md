@@ -6,7 +6,7 @@
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
-| service | string | . | Path of the service being deployed | True |
+| service_path | string | . | Path of the service being deployed AND artifactId in pom.xml (must match) | True |
 | java_distribution | string | temurin | Distribution of JDK being used, refer to [this](https://github.com/actions/setup-java) for a list of distributions available | True |
 | java_version | string |  | Version of JDK being used, refer to link above for references of available versions | True |
 
