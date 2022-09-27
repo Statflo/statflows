@@ -64,7 +64,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-${{ inputs.java_version }}
           
-      - name: Code Style
+      - name: Verify
         run: |
           ${{ env.MVN_DEFAULT }} clean compile verify -U -DskipTests
       
