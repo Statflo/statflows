@@ -18,7 +18,7 @@ on:
       namespace:
         type: string
         required: true
-        description: Namespace (if applicable) of the service
+        description: Namespace of the service
       java_distribution:
         type: string
         required: true

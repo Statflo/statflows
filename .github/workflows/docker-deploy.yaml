@@ -5,19 +5,20 @@ on:
     inputs:
       environment:
         type: string
-        default: 'development'
         required: true
-      service:
-        type: string
-        default: '.'
-        required: false
       service_path:
         type: string
         default: '.'
+        description: Path of application if a monorepo is in use (used for infrastructure)
         required: false
+      service:
+        type: string
+        required: false
+        description: Name of the service in Kubernetes (i.e sso)
       namespace:
         type: string
         required: true
+        description: Namespace of the service
     secrets:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: true
