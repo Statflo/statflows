@@ -27,6 +27,9 @@ on:
       build_env:
         type: string
         required: false
+      public_url:
+        type: string
+        required: false
     secrets:
       AWS_ACCESS_KEY:
         required: true
@@ -71,6 +74,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         env: 
           BUILD_ENV: ${{ inputs.build_env }}
+          PUBLIC_URL: ${{ inputs.public_url}}
         shell: bash
         run: |
           yarn build
