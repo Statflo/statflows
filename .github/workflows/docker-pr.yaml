@@ -2,6 +2,11 @@ name: Docker - PR
 
 on:
   workflow_call:
+    inputs:
+      service_path:
+        type: string
+        required: false
+        default: '.'
 
 jobs:
   build:
@@ -29,10 +34,9 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./${{ inputs.service_path }}
+          file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-
