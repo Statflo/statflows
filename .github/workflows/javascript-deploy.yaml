@@ -71,7 +71,7 @@ jobs:
           yarn install
 
       - name: Build Dev
-        if: ${{ inputs.build_env }} == "development"
+        if: ${{ inputs.build_env == "development }}"
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
@@ -81,7 +81,7 @@ jobs:
           yarn build
 
       - name: Build RC
-        if: ${{ inputs.build_env }} == "rc"
+        if: ${{ inputs.build_env == "rc }}"
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
@@ -91,7 +91,7 @@ jobs:
           yarn build:rc
 
       - name: Build Prod
-        if: ${{ inputs.build_env }} == "production"
+        if: ${{ inputs.build_env == "production }}"
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
