@@ -70,15 +70,35 @@ jobs:
         run: |
           yarn install
 
-      - name: Build
+      - name: Build - Dev
+        if: {{ inputs.build_env }} == "development"
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
           PUBLIC_URL: ${{ inputs.public_url}}
-          REACT_APP_ENV: ${{ inputs.build_env }}
         shell: bash
         run: |
           yarn build
+
+      - name: Build - RC
+        if: {{ inputs.build_env }} == "rc"
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
+          PUBLIC_URL: ${{ inputs.public_url}}
+        shell: bash
+        run: |
+          yarn build:rc
+
+      - name: Build - Prod
+        if: {{ inputs.build_env }} == "production"
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
+          PUBLIC_URL: ${{ inputs.public_url}}
+        shell: bash
+        run: |
+          yarn build:prod
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
