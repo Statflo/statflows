@@ -75,6 +75,7 @@ jobs:
         env: 
           BUILD_ENV: ${{ inputs.build_env }}
           PUBLIC_URL: ${{ inputs.public_url}}
+          NODE_ENV: ${{ inputs.build_env }}
         shell: bash
         run: |
           yarn build
