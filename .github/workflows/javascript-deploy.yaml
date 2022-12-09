@@ -31,8 +31,8 @@ on:
         type: string
         required: false
       force:
-        type: boolean
-        default:
+        type: string
+        default: "false"
         required: false
     secrets:
       AWS_ACCESS_KEY:
