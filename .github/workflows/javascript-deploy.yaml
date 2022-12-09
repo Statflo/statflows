@@ -32,7 +32,7 @@ on:
         required: false
       force:
         type: boolean
-        default:
+        default: false
         required: false
     secrets:
       AWS_ACCESS_KEY:
@@ -74,8 +74,8 @@ jobs:
         run: |
           yarn install
 
-      - name: "Build ${{ inputs.build_env }}"
-        if: inputs.force == "false" || inputs.force == ""
+      - run-name: Build ${{ inputs.build_env }}
+        if: inputs.force == false || inputs.force == ""
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
@@ -84,8 +84,8 @@ jobs:
         run: |
           yarn build:${{ inputs.build_env }}
 
-      - name: "Force Build ${{ inputs.build_env }}"
-        if: inputs.force == "true"
+      - run-name: Force Build ${{ inputs.build_env }}
+        if: inputs.force == true
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
