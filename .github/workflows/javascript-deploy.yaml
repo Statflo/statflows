@@ -74,7 +74,7 @@ jobs:
         run: |
           yarn install
 
-      - run-name: Build ${{ inputs.build_env }}
+      - name: "Build ${{ inputs.build_env }}"
         if: inputs.force == "false" || inputs.force == ""
         working-directory: ${{ inputs.working_directory }}
         env:
@@ -84,7 +84,7 @@ jobs:
         run: |
           yarn build:${{ inputs.build_env }}
 
-      - run-name: Force Build ${{ inputs.build_env }}
+      - name: "Force Build ${{ inputs.build_env }}"
         if: inputs.force == "true"
         working-directory: ${{ inputs.working_directory }}
         env:
