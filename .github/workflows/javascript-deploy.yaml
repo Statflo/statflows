@@ -30,6 +30,9 @@ on:
       public_url:
         type: string
         required: false
+      force:
+        type: boolean
+        required: false
     secrets:
       AWS_ACCESS_KEY:
         required: true
@@ -70,7 +73,8 @@ jobs:
         run: |
           yarn install
 
-      - name: Build
+      - run-name: Build ${{ inputs.build_env }}
+        if: inputs.force == "false"
         working-directory: ${{ inputs.working_directory }}
         env:
           BUILD_ENV: ${{ inputs.build_env }}
@@ -78,6 +82,16 @@ jobs:
         shell: bash
         run: |
           yarn build:${{ inputs.build_env }}
+
+      - run-name: Force Build ${{ inputs.build_env }}
+        if: inputs.force == "true"
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
+          PUBLIC_URL: ${{ inputs.public_url}}
+        shell: bash
+        run: |
+          yarn build:${{ inputs.build_env }} --force
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
