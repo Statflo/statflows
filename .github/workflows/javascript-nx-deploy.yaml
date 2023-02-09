@@ -1,4 +1,4 @@
-name: JavaScript - Deploy
+name: JavaScript NX - Deploy
 
 on:
   workflow_call:
