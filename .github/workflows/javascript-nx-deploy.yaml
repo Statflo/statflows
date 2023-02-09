@@ -1,0 +1,92 @@
+name: JavaScript - Deploy
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        type: string
+        required: false
+      working_directory:
+        type: string
+        default: "."
+        required: false
+      dist_folder:
+        type: string
+        required: false
+        default: "./dist"
+      s3_bucket:
+        type: string
+        required: true
+      s3_bucket_region:
+        type: string
+        default: "ca-central-1"
+        required: false
+      cf_dist_id:
+        type: string
+        required: true
+      build_env:
+        type: string
+        required: false
+      app_name:
+        type: string
+        required: true
+    secrets:
+      AWS_ACCESS_KEY:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        if: inputs.node_version != ''
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: |
+          echo "WORKDIR_PATH=$(echo ${{ inputs.working_directory }} | sed -e 's/\//-/g')" >> $GITHUB_ENV
+          cd ${{ inputs.working_directory }}
+          echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.working_directory }}
+        shell: bash
+        run: |
+          yarn install
+
+      - name: "Build ${{ inputs.build_env }}"
+        working-directory: ${{ inputs.working_directory }}
+        env:
+          BUILD_ENV: ${{ inputs.build_env }}
+        shell: bash
+        run: |
+           yarn env-cmd -f .env.${{ inputs.build_env }} nx run ${{ inputs.app_name }}:build:${{ inputs.build_env }} 
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ inputs.s3_bucket_region }}
+
+      - name: Deploy container to bucket
+        run: aws s3 sync ${{ inputs.working_directory}}/${{ inputs.dist_folder }} s3://${{ inputs.s3_bucket }} --delete
+
+      - name: Invalidate dashboard cloudfront
+        run: aws cloudfront create-invalidation --distribution-id ${{ inputs.cf_dist_id }} --paths "/*"
