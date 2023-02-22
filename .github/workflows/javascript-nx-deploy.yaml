@@ -76,7 +76,7 @@ jobs:
           BUILD_ENV: ${{ inputs.build_env }}
         shell: bash
         run: |
-           yarn env-cmd -f .env.${{ inputs.build_env }} nx run ${{ inputs.app_name }}:build:${{ inputs.build_env }} 
+           yarn env-cmd -f .env.${{ inputs.build_env }} nx run ${{ inputs.app_name }}:build:${{ inputs.build_env }} --skip-nx-cache
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
