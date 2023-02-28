@@ -7,6 +7,9 @@ on:
         type: string
         required: false
         default: '.'
+      secrets:
+        type: string
+        required: false
 
 jobs:
   build:
@@ -40,3 +43,4 @@ jobs:
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          secrets: ${{ inputs.secrets }}
