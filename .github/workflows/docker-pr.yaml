@@ -2,14 +2,14 @@ name: Docker - PR
 
 on:
   workflow_call:
-    secrets:
-      GIT_AUTH_TOKEN:
-        required: false
     inputs:
       service_path:
         type: string
         required: false
         default: '.'
+      secrets:
+        type: string
+        required: false
 
 jobs:
   build:
@@ -43,5 +43,4 @@ jobs:
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          secrets:
-            GIT_AUTH_TOKEN: ${{ secrets.GIT_AUTH_TOKEN }}
+          secrets: ${{ inputs.secrets }}
