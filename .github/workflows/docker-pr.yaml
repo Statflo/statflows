@@ -26,9 +26,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-${{ inputs.service }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-${{ inputs.service_path }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-${{ inputs.service }}-buildx-
+            ${{ runner.os }}-${{ inputs.service_path }}-buildx-
 
       - name: Build
         id: docker_build
