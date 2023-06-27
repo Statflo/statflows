@@ -17,9 +17,8 @@ on:
         description: Revision file to update
  
 jobs:
-  deploy:
+  revision:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
