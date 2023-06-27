@@ -26,8 +26,8 @@ jobs:
 
       - name: Write revision to file
         run: |
-        cd ${{ inputs.service_path }}
-        echo ${{ inputs.commit_id }} > ${{ inputs.revision_file }}
+          cd ${{ inputs.service_path }}
+          echo ${{ inputs.commit_id }} > ${{ inputs.revision_file }}
 
       - name: Commit and push
       run: |
