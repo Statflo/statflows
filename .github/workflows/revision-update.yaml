@@ -16,7 +16,7 @@ on:
         required: true
         description: Revision file to update
  
- jobs:
+jobs:
   deploy:
     runs-on: ubuntu-latest
 
