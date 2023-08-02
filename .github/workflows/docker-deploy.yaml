@@ -93,7 +93,7 @@ jobs:
         # env:
         #   ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
         run: |
-          git checkout main
+          git pull origin master
           cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
           sed -i "s|image:.*|image: test-${GITHUB_RUN_NUMBER}}|" ${{ inputs.service }}.yaml
 
