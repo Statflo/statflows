@@ -34,6 +34,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${GITHUB_REF_NAME}
 
       - name: Configure ECR AWS credentials (dev)
         uses: aws-actions/configure-aws-credentials@v1
