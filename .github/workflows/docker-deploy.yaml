@@ -19,11 +19,11 @@ on:
         type: string
         required: true
         description: Namespace of the service
-    secrets:
-      AWS_ACCESS_KEY_DEVELOPMENT:
-        required: true
-      AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
-        required: true      
+    # secrets:
+    #   AWS_ACCESS_KEY_DEVELOPMENT:
+    #     required: true
+    #   AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
+    #     required: true      
 
 jobs:
   deploy:
@@ -91,8 +91,8 @@ jobs:
       #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Kubernetes resource setup
-        env:
-          ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+        # env:
+        #   ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
         run: |
           cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
           sed -i "s|image:.*|image: test-${GITHUB_RUN_NUMBER}}|" ${{ inputs.service }}.yaml
