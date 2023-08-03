@@ -96,7 +96,7 @@ jobs:
           git checkout main
           git pull origin main
           cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
-          sed -i "s|image:.*|image: $ECR_IMAGE||" ${{ inputs.service }}.yaml
+          sed -i "s|image:.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
 
       - name: Commit and Push
         run: |
