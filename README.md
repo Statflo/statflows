@@ -58,3 +58,12 @@
 | build_env | string |  | Sets a app specific environment variable as needed | False |
 | AWS_ACCESS_KEY | string |  | SECRET: AWS access key to deploy to environment | True |
 | AWS_SECRET_ACCESS_KEY | string |  | SECRET: AWS secret access key to deploy to environment | True |
+
+### Revision Update
+
+| Name | Value | Default | Description | Required |
+|---|---|---|---|---|
+| service_path | string | . | Path of the service | False |
+| commit_id | string |  | Commit hash that needs to be added to revision file | True |
+| revision_file | string |  |Name of revision file that needs to be updated | True |
+
