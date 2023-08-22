@@ -64,6 +64,11 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-
 
+      - name: Steup env vars
+        shell: bash
+        run: |
+          echo "VERSION=$(echo ${GITHUB_REF_NAME}-$(date +'%Y-%m-%d'))" >> $GITHUB_ENV
+
       - name: Install dependencies
         working-directory: ${{ inputs.working_directory }}
         shell: bash
