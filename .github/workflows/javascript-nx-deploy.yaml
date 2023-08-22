@@ -72,7 +72,7 @@ jobs:
         if: inputs.versioning
         shell: bash
         run: |
-          echo "NX_VERSION=$(echo ${GITHUB_REF_NAME}-$(date +'%Y-%m-%d'))" >> $GITHUB_ENV
+          echo "VERSION=$(echo ${GITHUB_REF_NAME}-$(date +'%Y-%m-%d'))" >> $GITHUB_ENV
       
       - name: Set Version env variable
         if: inputs.versioning
