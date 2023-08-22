@@ -33,7 +33,7 @@ on:
       versioning:
         type: boolean
         required: false
-        default: "false"
+        default: false
     secrets:
       AWS_ACCESS_KEY:
         required: true
