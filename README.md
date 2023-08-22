@@ -59,7 +59,7 @@
 | AWS_ACCESS_KEY | string |  | SECRET: AWS access key to deploy to environment | True |
 | AWS_SECRET_ACCESS_KEY | string |  | SECRET: AWS secret access key to deploy to environment | True |
 
-### JavaScript - Deploy
+### JavaScript NX - Deploy
 
 | Name | Value | Default | Description | Required |
 |---|---|---|---|---|
