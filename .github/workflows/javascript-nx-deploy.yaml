@@ -30,6 +30,10 @@ on:
       app_name:
         type: string
         required: true
+      versioning:
+        type: boolean
+        required: false
+        default: "false"
     secrets:
       AWS_ACCESS_KEY:
         required: true
@@ -64,10 +68,16 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-${{ env.WORKDIR_PATH }}-yarn-
 
-      - name: Setup env vars
+      - name: Setup env variables
+        if: inputs.versioning
         shell: bash
         run: |
-          echo "VERSION=$(echo ${GITHUB_REF_NAME}-$(date +'%Y-%m-%d'))" >> $GITHUB_ENV
+          echo "NX_VERSION=$(echo ${GITHUB_REF_NAME}-$(date +'%Y-%m-%d'))" >> $GITHUB_ENV
+      
+      - name: Set Version env variable
+        if: inputs.versioning
+        run: |
+          sed -i "s|NX_VERSION=.*|NX_VERSION=$VERSION|" .env.${{ inputs.build_env }}
 
       - name: Install dependencies
         working-directory: ${{ inputs.working_directory }}
