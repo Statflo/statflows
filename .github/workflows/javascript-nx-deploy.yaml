@@ -78,6 +78,7 @@ jobs:
         if: inputs.versioning
         run: |
           sed -i "s|NX_VERSION=.*|NX_VERSION=$VERSION|" .env.${{ inputs.build_env }}
+          cat .env.${{ inputs.build_env }}
 
       - name: Install dependencies
         working-directory: ${{ inputs.working_directory }}
