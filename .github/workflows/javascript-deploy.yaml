@@ -50,14 +50,14 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         if: inputs.node_version != ''
         with:
           node-version: ${{ inputs.node_version }}
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         if: inputs.python_version != ''
         with:
           python-version: ${{ inputs.python_version }}
@@ -69,7 +69,7 @@ jobs:
           cd ${{ inputs.working_directory }}
           echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -104,7 +104,7 @@ jobs:
           yarn build:${{ inputs.build_env }} --force
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
