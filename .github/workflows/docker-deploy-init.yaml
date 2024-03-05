@@ -100,12 +100,12 @@ jobs:
           git checkout main
           git pull origin main
           cd ${{ inputs.target-service-path }}/infrastructure/kubernetes/${{ inputs.environment }}
-          sed -i "s|image: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
+          sed -i "s|image: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}.*|image: $ECR_IMAGE|" ${{ inputs.target-service-path }}.yaml
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ inputs.target-service-path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.service }}.yaml
+          git add ${{ inputs.target-service-path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.target-service-path }}.yaml
           git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
           git push origin main
