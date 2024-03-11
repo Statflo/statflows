@@ -86,9 +86,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
-          docker run ${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-          docker exec ${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-          docker stop ${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          docker run ${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          docker exec ${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+          docker stop ${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
 
       # - name: Push
       #   id: docker_build
