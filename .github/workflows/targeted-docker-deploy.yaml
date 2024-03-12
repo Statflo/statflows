@@ -19,10 +19,6 @@ on:
         type: string
         required: true
         description: Namespace of the service
-      target-service-path:
-        type: string
-        required: true
-        description: If service is used in yaml alongside a different service, place target service name here
     secrets:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: true
@@ -95,17 +91,17 @@ jobs:
 
       - name: Kubernetes resource setup
         env:
+          PREV_ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}
           ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
         run: |
-          git checkout main
-          git pull origin main
-          cd ${{ inputs.target-service-path }}/infrastructure/kubernetes/${{ inputs.environment }}
-          sed -i "s|image: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}.*|image: $ECR_IMAGE|" ${{ inputs.target-service-path }}.yaml
+          git checkout test-target-deploy-branch
+          git pull origin test-target-deploy-branch
+          find . -type f - name "*.yaml" -print0 | xargs -0 sed -i "s|image: $PREV_ECR_IMAGE.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ inputs.target-service-path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.target-service-path }}.yaml
+          git add ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.service }}.yaml
           git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
-          git push origin main
+          git push origin test-target-deploy-branch
