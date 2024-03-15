@@ -96,7 +96,7 @@ jobs:
         run: |
           git checkout test-target-deploy-branch
           git pull origin test-target-deploy-branch
-          find . -type f -name "*.yaml" -print0 | xargs -0 sed -i "s|image: $PREV_ECR_IMAGE.*|image: $ECR_IMAGE|"
+          find . -type f -name "*${{ inputs.environment }}*/*.yaml" -print0 | xargs -0 sed -i "s|image: $PREV_ECR_IMAGE.*|image: $ECR_IMAGE|"
 
       - name: Commit and Push
         run: |
