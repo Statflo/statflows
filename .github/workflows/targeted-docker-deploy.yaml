@@ -1,4 +1,4 @@
-name: Docker - Deploy
+name: Targeted Docker - Deploy
 
 on:
   workflow_call:
@@ -94,8 +94,8 @@ jobs:
           PREV_ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}
           ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
         run: |
-          git checkout test-target-deploy-branch
-          git pull origin test-target-deploy-branch
+          git checkout main
+          git pull origin main
           find . -type f -path "*/${{ inputs.environment }}/*" -name "*.yaml" -print0 | xargs -0 sed -i "s|image: $PREV_ECR_IMAGE.*|image: $ECR_IMAGE|"
 
       - name: Commit and Push
@@ -104,4 +104,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git ls-files --modified | grep '\.yaml$' | xargs git add
           git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
-          git push origin test-target-deploy-branch
+          git push origin main
