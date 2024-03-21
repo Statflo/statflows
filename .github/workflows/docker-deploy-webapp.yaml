@@ -1,4 +1,4 @@
-name: Docker - Deploy
+name: Docker - Deploy Webapp
 
 on:
   workflow_call:
@@ -65,32 +65,39 @@ jobs:
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           echo "GIT_REF=`echo ${GITHUB_REF##*/}`" >> $GITHUB_ENV
           echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
-      
-      - name: Build
-        id: docker_build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ inputs.service_path }}
-          file: ./${{ inputs.service_path }}/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: false
-          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-          outputs: image
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Test
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-        run: |
-          docker image list
-          docker run statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-          docker exec statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-          docker stop statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+        working-directory: ${{ inputs.service_path }}
+        uses: php-actions/phpunit@v3
+        with:
+          args: bin/phpunit
+
+      
+      # - name: Build
+      #   id: docker_build
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./${{ inputs.service_path }}
+      #     file: ./${{ inputs.service_path }}/Dockerfile
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     push: false
+      #     tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+      #     outputs: image
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      # - name: Test
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
+      #   run: |
+      #     docker image list
+      #     docker run statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+      #     docker exec statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+      #     docker stop statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
 
       # - name: Push
       #   id: docker_build
