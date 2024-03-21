@@ -67,10 +67,9 @@ jobs:
           echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
 
       - name: Test
-        working-directory: ${{ inputs.service_path }}
         uses: php-actions/phpunit@v3
         with:
-          args: bin/phpunit
+          args: ${{ inputs.service_path }}/bin/phpunit
 
       
       # - name: Build
