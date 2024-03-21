@@ -87,21 +87,16 @@ jobs:
           outputs: image
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      
-      - name: Test
-        uses: php-actions/phpunit@v3
-        with:
-          args: ${{ inputs.service_path }}/bin/phpunit
 
-      # - name: Test
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-      #   run: |
-      #     docker image list
-      #     docker run statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-      #     docker exec statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-      #     docker stop statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+      - name: Test
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
+        run: |
+          docker image list
+          docker run statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          docker exec statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+          docker stop statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
 
       # - name: Push
       #   id: docker_build
