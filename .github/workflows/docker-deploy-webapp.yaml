@@ -94,9 +94,9 @@ jobs:
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
           docker image list
-          docker run statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-          docker exec statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-          docker stop statflo-webapp:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          docker run ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          docker exec ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+          docker stop ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
 
       # - name: Push
       #   id: docker_build
