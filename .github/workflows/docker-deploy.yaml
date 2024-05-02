@@ -19,6 +19,11 @@ on:
         type: string
         required: true
         description: Namespace of the service
+      shared_context:
+        type: boolean
+        required: false
+        default: false
+        description: Set to true if dockerfile needs repo wide context
     secrets:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: true
@@ -66,7 +71,24 @@ jobs:
           echo "GIT_REF=`echo ${GITHUB_REF##*/}`" >> $GITHUB_ENV
           echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
       
+      - name: Shared Context Build and push
+        if: ${{ inputs.shared_context }}
+        id: docker_build
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./${{ inputs.service_path }}/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
       - name: Build and push
+        if: ${{ ! inputs.shared_context }}
         id: docker_build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
