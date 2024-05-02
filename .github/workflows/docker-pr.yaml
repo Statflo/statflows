@@ -7,6 +7,12 @@ on:
         type: string
         required: false
         default: '.'
+      shared_context:
+        type: boolean
+        required: false
+        default: false
+        description: Set to true if dockerfile needs repo wide context
+
 
 jobs:
   build:
@@ -30,7 +36,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ inputs.service_path }}-buildx-
 
+      - name: Shared Context Build
+        if: ${{ inputs.shared_context }}
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./${{ inputs.service_path }}/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
       - name: Build
+        if: ${{ ! inputs.shared_context }}
         id: docker_build
         uses: docker/build-push-action@v5
         with:
