@@ -73,7 +73,7 @@ jobs:
       
       - name: Shared Context Build and push
         if: ${{ inputs.shared_context }}
-        id: docker_build
+        id: shared_context_docker_build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
