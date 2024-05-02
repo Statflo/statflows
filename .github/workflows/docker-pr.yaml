@@ -38,7 +38,7 @@ jobs:
 
       - name: Shared Context Build
         if: ${{ inputs.shared_context }}
-        id: docker_build
+        id: shared_contenxt_docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
