@@ -96,7 +96,7 @@ jobs:
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
           docker image list
-          docker run --name ${{ inputs.service }} -e ENVIRONMENT=prod --rm -it ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+          docker run --name ${{ inputs.service }} -e ENVIRONMENT=prod --rm -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
       
       # - name: Push
       #   id: docker_build
