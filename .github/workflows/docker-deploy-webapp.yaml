@@ -96,11 +96,10 @@ jobs:
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
           docker image list
-          docker run -d -e ENVIRONMENT=prod ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} 
+          docker run --name ${{ inputs.service }} -d -e ENVIRONMENT=prod ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} 
           sleep 30
-          docker exec ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-          docker stop ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-
+          docker exec ${{ inputs.service }} php bin/phpunit
+          docker stop ${{ inputs.service }}
       # - name: Push
       #   id: docker_build
       #   env:
