@@ -1,0 +1,65 @@
+name: Docker - PR - PHPUnit
+
+on:
+  workflow_call:
+    inputs:
+      service_path:
+        type: string
+        default: '.'
+        description: Path of application if a monorepo is in use (used for infrastructure)
+        required: false
+      service:
+        type: string
+        required: false
+        description: Name of the service in Kubernetes (i.e sso)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_CLI_EXPERIMENTAL: enabled
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-${{ inputs.service }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ inputs.service }}-buildx-
+
+      - name: Build
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ inputs.service_path }}
+          file: ./${{ inputs.service_path }}/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            ENVIRONMENT: local
+          push: false
+          tags: ${{ inputs.service }}
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Test
+        run: |
+          docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' -e SYMFONY_DEPRECATIONS_HELPER='disabled' --rm -t ${{ inputs.service }} php bin/phpunit
+
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
