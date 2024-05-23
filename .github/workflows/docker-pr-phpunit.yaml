@@ -1,4 +1,4 @@
-name: Docker - Deploy Webapp
+name: Docker - PR - PHPUnit
 
 on:
   workflow_call:
@@ -66,12 +66,6 @@ jobs:
           echo "GIT_REF=`echo ${GITHUB_REF##*/}`" >> $GITHUB_ENV
           echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
 
-      # - name: Test
-      #   uses: php-actions/phpunit@v3
-      #   with:
-      #     args: ${{ inputs.service_path }}/bin/phpunit
-
-      
       - name: Build
         id: docker_build
         env:
@@ -95,45 +89,12 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
-          docker image list
           docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' -e SYMFONY_DEPRECATIONS_HELPER='disabled' --rm -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
-      
-      # - name: Push
-      #   id: docker_build
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./${{ inputs.service_path }}
-      #     file: ./${{ inputs.service_path }}/Dockerfile
-      #     builder: ${{ steps.buildx.outputs.name }}
-      #     push: true
-      #     tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-      #     cache-from: type=local,src=/tmp/.buildx-cache
-      #     cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-      #   # Temp fix
-      #   # https://github.com/docker/build-push-action/issues/252
-      #   # https://github.com/moby/buildkit/issues/1896
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      # - name: Kubernetes resource setup
-      #   env:
-      #     ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-      #   run: |
-      #     git checkout main
-      #     git pull origin main
-      #     cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
-      #     sed -i "s|image:.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
-
-      # - name: Commit and Push
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.service }}.yaml
-      #     git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
-      #     git push origin main
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
