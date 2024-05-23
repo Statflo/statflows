@@ -3,9 +3,6 @@ name: Docker - PR - PHPUnit
 on:
   workflow_call:
     inputs:
-      environment:
-        type: string
-        required: true
       service_path:
         type: string
         default: '.'
@@ -15,15 +12,6 @@ on:
         type: string
         required: false
         description: Name of the service in Kubernetes (i.e sso)
-      namespace:
-        type: string
-        required: true
-        description: Namespace of the service
-    secrets:
-      AWS_ACCESS_KEY_DEVELOPMENT:
-        required: true
-      AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
-        required: true      
 
 jobs:
   deploy:
@@ -37,17 +25,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure ECR AWS credentials (dev)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_DEVELOPMENT }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEVELOPMENT }}
-          aws-region: ca-central-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -59,18 +36,9 @@ jobs:
           key: ${{ runner.os }}-${{ inputs.service }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.service }}-buildx-
-      
-      - name: Generate env vars
-        run: |
-          echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-          echo "GIT_REF=`echo ${GITHUB_REF##*/}`" >> $GITHUB_ENV
-          echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
 
       - name: Build
         id: docker_build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         uses: docker/build-push-action@v5
         with:
           context: ./${{ inputs.service_path }}
@@ -79,17 +47,14 @@ jobs:
           build-args: |
             ENVIRONMENT: local
           push: false
-          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+          tags: ${{ inputs.service }}
           load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Test
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
         run: |
-          docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' -e SYMFONY_DEPRECATIONS_HELPER='disabled' --rm -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }} php bin/phpunit
+          docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' -e SYMFONY_DEPRECATIONS_HELPER='disabled' --rm -t ${{ inputs.service }} php bin/phpunit
 
         # Temp fix
         # https://github.com/docker/build-push-action/issues/252
