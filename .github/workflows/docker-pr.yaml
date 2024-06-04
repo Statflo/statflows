@@ -17,7 +17,7 @@ on:
         required: false
         default: false
         description: Set to true if ECR access is required to build
-     secrets:
+    secrets:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: false
       AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
