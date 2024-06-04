@@ -12,6 +12,16 @@ on:
         required: false
         default: false
         description: Set to true if dockerfile needs repo wide context
+      ecr:
+        type: boolean
+        required: false
+        default: false
+        description: Set to true if ECR access is required to build
+     secrets:
+      AWS_ACCESS_KEY_DEVELOPMENT:
+        required: false
+      AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
+        required: false   
 
 
 jobs:
@@ -23,6 +33,20 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Configure ECR AWS credentials (dev)
+        if: ${{ inputs.ecr }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_DEVELOPMENT }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEVELOPMENT }}
+          aws-region: ca-central-1
+
+      - name: Login to Amazon ECR
+        if: ${{ inputs.ecr }}
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
 
       - name: Set up Docker Buildx
         id: buildx
