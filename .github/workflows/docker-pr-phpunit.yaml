@@ -52,6 +52,10 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
+      - name: Lint Check
+        run: |
+          docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' --rm -t ${{ inputs.service }} ./bin/lint check
+
       - name: Test
         run: |
           docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' --rm -t ${{ inputs.service }} php bin/phpunit
