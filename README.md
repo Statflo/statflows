@@ -1,82 +1,45 @@
-# Statflo Reusable GitHub Actions Workflows
+# Statflo Reusable GitHub Actions Workflows Documentation
 
-## Inputs
+This documentation outlines the inputs required for various GitHub Actions workflows within the Statflo repository. These workflows facilitate automated processes for different programming languages and deployment scenarios, including Java, Docker, JavaScript, and more.
 
-### Java - PR
+## Workflow Inputs Overview
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| service_path | string | . | Path of the service being deployed AND artifactId in pom.xml (must match) | True |
-| java_distribution | string | temurin | Distribution of JDK being used, refer to [this](https://github.com/actions/setup-java) for a list of distributions available | True |
-| java_version | string |  | Version of JDK being used, refer to link above for references of available versions | True |
+### Common Inputs Across Workflows
 
-### Java - Deploy
+- `service_path`: Specifies the path of the service being deployed. It is also used to match the `artifactId` in `pom.xml` for Java workflows and to track infrastructure folders for Docker deployments.
+- `AWS_ACCESS_KEY_DEVELOPMENT`: A secret key for AWS access, required for workflows interacting with AWS services like ECR.
+- `AWS_SECRET_ACCESS_KEY_DEVELOPMENT`: A secret key for AWS secret access, necessary for authentication with AWS services.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| environment | string | development | Environment being deployed to | True |
-| service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
-| service | string | . | Name of the service in Kubernetes (i.e sso) | True |
-| namespace | string |  | Namespace (if applicable) of the service (used for ECR) | True |
-| java_distribution | string | temurin | Distribution of JDK being used, refer to [this](https://github.com/actions/setup-java) for a list of distributions available | True |
-| java_version | string |  | Version of JDK being used, refer to link above for references of available versions | True |
-| AWS_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS access key to access a specific ECR | True |
-| AWS_SECRET_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS secret access key to access a specific ECR | True |
+### Java Workflows
 
-### Docker - PR
+- `java_distribution`: The distribution of JDK being used. Supported distributions can be found in the [setup-java GitHub Action documentation](https://github.com/actions/setup-java).
+- `java_version`: Specifies the version of JDK to be used.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
-| service | string |  | Name of the service in Kubernetes (i.e sso) | False |
+### Docker Workflows
 
-### Docker - Deploy
+- `environment`: Defines the deployment environment (e.g., development, production).
+- `namespace`: Specifies the namespace of the service, used for ECR and Kubernetes configurations.
+- `shared_context`: Indicates whether the Dockerfile needs context from the entire repository.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| environment | string | development | Environment being deployed to | True |
-| service_path | string | . | Path of service being deployed, used for tracking infrastructure folders | False |
-| service | string | . | Name of the service in Kubernetes (i.e sso) | False |
-| namespace | string |  | Namespace (if applicable) of the service (used for ECR) | True |
-| AWS_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS access key to access a specific ECR | True |
-| AWS_SECRET_ACCESS_KEY_DEVELOPMENT | string |  | SECRET: AWS secret access key to access a specific ECR | True |
+### JavaScript Workflows
 
-### JavaScript - PR
+- `working_directory`: Sets a working directory, useful in monorepo setups.
+- `s3_bucket`: The address of the S3 bucket for deployments, without the `s3://` prefix.
+- `s3_bucket_region`: The AWS region where the S3 bucket is located.
+- `cf_dist_id`: The CloudFront Distribution ID for the deployed website.
+- `build_env`: An application-specific environment variable.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| working_directory | string | . | Sets a working directory if a monorepo is being used | False |
+### JavaScript NX Workflows
 
-### JavaScript - Deploy
+- `versioning`: Enables versioning for deployments, allowing for rollback and history tracking.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| working_directory | string | . | Sets a working directory if a monorepo is being used | False |
-| s3_bucket | string |  | Address of the s3 bucket (`s3://` is not required) | True |
-| s3_bucket_region | string | ca-central-1 | Region where the s3 bucket is located | False |
-| cf_dist_id | string |  | Cloudfront Distribution ID where s3 website is hosted | True |
-| build_env | string |  | Sets a app specific environment variable as needed | False |
-| AWS_ACCESS_KEY | string |  | SECRET: AWS access key to deploy to environment | True |
-| AWS_SECRET_ACCESS_KEY | string |  | SECRET: AWS secret access key to deploy to environment | True |
+### Revision Update Workflow
 
-### JavaScript NX - Deploy
+- `commit_id`: The commit hash that needs to be added to the revision file.
+- `revision_file`: The name of the revision file to be updated.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| working_directory | string | . | Sets a working directory if a monorepo is being used | False |
-| s3_bucket | string |  | Address of the s3 bucket (`s3://` is not required) | True |
-| s3_bucket_region | string | ca-central-1 | Region where the s3 bucket is located | False |
-| cf_dist_id | string |  | Cloudfront Distribution ID where s3 website is hosted | True |
-| build_env | string |  | Sets a app specific environment variable as needed | False |
-| versioning | boolean | False | Set to true if want to use versioning feature | False | 
-| AWS_ACCESS_KEY | string |  | SECRET: AWS access key to deploy to environment | True |
-| AWS_SECRET_ACCESS_KEY | string |  | SECRET: AWS secret access key to deploy to environment | True |
+## Usage
 
-### Revision Update
+To use these workflows, configure the required inputs in your `.github/workflows/` YAML files. Ensure that secrets like `AWS_ACCESS_KEY_DEVELOPMENT` and `AWS_SECRET_ACCESS_KEY_DEVELOPMENT` are set in your repository's secrets settings.
 
-| Name | Value | Default | Description | Required |
-|---|---|---|---|---|
-| service_path | string | . | Path of the service | False |
-| commit_id | string |  | Commit hash that needs to be added to revision file | True |
-| revision_file | string |  |Name of revision file that needs to be updated | True |
-
+For more detailed instructions on setting up and using these workflows, refer to the specific documentation sections for each programming language and deployment scenario.
