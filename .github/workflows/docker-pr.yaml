@@ -47,7 +47,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
@@ -63,7 +62,7 @@ jobs:
       - name: Shared Context Build
         if: ${{ inputs.shared_context }}
         id: shared_contenxt_docker_build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ inputs.service_path }}/Dockerfile
@@ -75,7 +74,7 @@ jobs:
       - name: Build
         if: ${{ ! inputs.shared_context }}
         id: docker_build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./${{ inputs.service_path }}
           file: ./${{ inputs.service_path }}/Dockerfile
