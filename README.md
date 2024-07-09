@@ -1,4 +1,4 @@
-# Statflo Reusable GitHub Actions Workflows Documentation
+# Statflo Reusable GitHub Actions Workflows
 
 This documentation outlines the inputs required for various GitHub Actions workflows within the Statflo repository. These workflows facilitate automated processes for different programming languages and deployment scenarios, including Java, Docker, JavaScript, and more.
 
@@ -41,5 +41,3 @@ This documentation outlines the inputs required for various GitHub Actions workf
 ## Usage
 
 To use these workflows, configure the required inputs in your `.github/workflows/` YAML files. Ensure that secrets like `AWS_ACCESS_KEY_DEVELOPMENT` and `AWS_SECRET_ACCESS_KEY_DEVELOPMENT` are set in your repository's secrets settings.
-
-For more detailed instructions on setting up and using these workflows, refer to the specific documentation sections for each programming language and deployment scenario.
