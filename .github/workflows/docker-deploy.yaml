@@ -64,20 +64,19 @@ jobs:
           key: ${{ runner.os }}-${{ inputs.service }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-${{ inputs.service }}-buildx-
-      
+
       - name: Generate env vars
         run: |
           echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
           echo "GIT_REF=`echo ${GITHUB_REF##*/}`" >> $GITHUB_ENV
           echo "DATE=`echo $(date +'%Y-%m-%d')`" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+          echo "ECR_REPOSITORY=${{ inputs.namespace }}/${{ inputs.service }}" >> $GITHUB_ENV
       
       - name: Shared Context Build and push
         if: ${{ inputs.shared_context }}
         id: shared_context_docker_build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ inputs.service_path }}/Dockerfile
@@ -90,10 +89,7 @@ jobs:
       - name: Build and push
         if: ${{ ! inputs.shared_context }}
         id: docker_build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./${{ inputs.service_path }}
           file: ./${{ inputs.service_path }}/Dockerfile
