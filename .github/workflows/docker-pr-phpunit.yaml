@@ -59,6 +59,10 @@ jobs:
       - name: Validate Schema
         run: |
           docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' --rm -t ${{ inputs.service }} php bin/console doctrine:schema:validate --skip-sync --env test
+      
+      - name: OpenAPI Check
+        run: |
+          docker run --name ${{ inputs.service }} -e ENVIRONMENT='prod' --rm -t ${{ inputs.service }} npm run spectral:lint
 
       - name: Test
         run: |
