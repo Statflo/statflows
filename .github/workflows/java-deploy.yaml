@@ -113,6 +113,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ inputs.namespace }}/${{ inputs.service }}
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.PAT_PACKAGES }}
         uses: docker/build-push-action@v5
         with:
           context: ./${{ inputs.service_path }}
