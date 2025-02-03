@@ -38,6 +38,7 @@ jobs:
     env:
       DOCKER_CLI_EXPERIMENTAL: enabled
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      GITHUB_USERNAME: ${{ github.actor }}
 
     steps:
       - name: Checkout repo
