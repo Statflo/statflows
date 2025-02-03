@@ -84,7 +84,7 @@ jobs:
           context: .
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          push: true
+          push: false
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -97,7 +97,7 @@ jobs:
           context: ./${{ inputs.service_path }}
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          push: true
+          push: false
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -110,19 +110,19 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Kubernetes resource setup
-        env:
-          ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
-        run: |
-          git checkout main
-          git pull origin main
-          cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
-          sed -i "s|image:.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
-
-      - name: Commit and Push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.service }}.yaml
-          git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
-          git push origin main
+#      - name: Kubernetes resource setup
+#        env:
+#          ECR_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.namespace }}/${{ inputs.service }}:${{ env.GIT_REF }}-${{ env.DATE }}-${{ env.SHORT_SHA }}
+#        run: |
+#          git checkout main
+#          git pull origin main
+#          cd ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}
+#          sed -i "s|image:.*|image: $ECR_IMAGE|" ${{ inputs.service }}.yaml
+#
+#      - name: Commit and Push
+#        run: |
+#          git config --global user.name "github-actions[bot]"
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git add ${{ inputs.service_path }}/infrastructure/kubernetes/${{ inputs.environment }}/${{ inputs.service }}.yaml
+#          git commit -a -m "Bump image tag (run number: ${GITHUB_RUN_NUMBER})"
+#          git push origin main
