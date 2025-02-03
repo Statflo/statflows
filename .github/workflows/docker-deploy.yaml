@@ -29,7 +29,7 @@ on:
         required: true
       AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
         required: true
-      GITHUB_TOKEN:
+      PAT_TOKEN:
         required: false
 
 jobs:
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_CLI_EXPERIMENTAL: enabled
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
       - name: Checkout repo
