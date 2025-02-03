@@ -98,6 +98,7 @@ jobs:
           context: ./${{ inputs.service_path }}
           build-args: |
             "GITHUB_TOKEN=${{ secrets.PAT_TOKEN }}"
+            "GITHUB_ACTOR=${{ github.actor }}"
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
