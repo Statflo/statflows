@@ -28,13 +28,16 @@ on:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: true
       AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
-        required: true      
+        required: true
+      GITHUB_TOKEN:
+        required: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
       DOCKER_CLI_EXPERIMENTAL: enabled
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout repo
