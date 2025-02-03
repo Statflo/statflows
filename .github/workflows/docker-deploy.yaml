@@ -96,9 +96,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./${{ inputs.service_path }}
-          build-args: |
-            "GITHUB_TOKEN=${{ secrets.PAT_TOKEN }}"
-            "GITHUB_ACTOR=${{ github.actor }}"
+          github-token: ${{ github.token }}
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
