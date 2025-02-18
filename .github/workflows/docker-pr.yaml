@@ -21,6 +21,8 @@ on:
       AWS_ACCESS_KEY_DEVELOPMENT:
         required: false
       AWS_SECRET_ACCESS_KEY_DEVELOPMENT:
+        required: false
+      PACKAGE_TOKEN:
         required: false   
 
 
@@ -65,6 +67,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          build-args: PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
@@ -77,6 +80,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./${{ inputs.service_path }}
+          build-args: PACKAGE_TOKEN=${{ secrets.PACKAGE_TOKEN }}
           file: ./${{ inputs.service_path }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: false
